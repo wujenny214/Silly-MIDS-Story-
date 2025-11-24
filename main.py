@@ -5,16 +5,18 @@ from google.genai import types
 from PIL import Image
 from io import BytesIO 
 
-
+#connect to the API
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEM_api_key"))
 
+#define the prompt for the story
 story_response = client.models.generate_content(
     model="gemini-2.5-flash",
     contents="Write me a goofy children's story about a student in the Interdisciplinary Data Science Studies program"
 )
 print(story_response.text)
 
+# Save the generated story to a text file
 def save_story_to_txt(text_content, filename="story_output.txt"):
     """Saves the generated story to a text file."""
     try:
@@ -26,6 +28,7 @@ def save_story_to_txt(text_content, filename="story_output.txt"):
 
 save_story_to_txt(story_response.text)
 
+#second prompt to generate an image based on the story
 image_prompt = (
     f"Create 1 photo that represents key points of the following story: {story_response.text}. The photo style should be childlike, colorful, and highly detailed."
 )
@@ -40,7 +43,7 @@ image_response = client.models.generate_images(
 )
 
 
-# Save the Generated Image 
+# Save the generated image 
 if image_response.generated_images:
     generated_image = image_response.generated_images[0].image
     image_bytes = generated_image.image_bytes
